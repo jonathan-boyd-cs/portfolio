@@ -1,0 +1,120 @@
+ID : 12345 NAME : Jane Doe 
+log [0] >> [ NOTIFICATION ] using user-defined port:5000
+log [1] >> ~~[ (0) BOOT ] Server running... address:127.0.1.1.
+log [2] >> [ (1) SOCKET - ATTEMPT ] socket().
+log [3] >> [ (1) SOCKET - SUCCESS ]...  success.
+log [4] >> [ (2) BIND - ATTEMPT ] bind().
+log [5] >> [ (2) BIND - SUCCESS ]... success.
+log [6] >> [ (3) LISTEN - ATTEMPT ] listen().
+log [7] >> [ (3) LISTEN - SUCCESS ]... success.
+log [8] >> ~~[ (4) LOAD ] server creating data handlers...
+log [9] >> ~~[ (4) LOAD ] server successfully created data handlers...
+log [10] >> ~~[ (5) INIT ] server in operation...
+log [11] >> [ CONNECTION - ATTEMPT ] accepting new connection @('127.0.0.1', 52814)
+log [12] >> [ CONNECTION - SUCCESS ] accepted new connection @('127.0.0.1', 52814): Alias - Jon
+log [13] >> [ STATUS ] clients connected: 1
+log [14] >> [ CONNECTION - ATTEMPT ] accepting new connection @('127.0.0.1', 52816)
+log [15] >> [ CONNECTION - SUCCESS ] accepted new connection @('127.0.0.1', 52816): Alias - Jill
+log [16] >> [ STATUS ] clients connected: 2
+log [17] >> [ CONNECTION - ATTEMPT ] accepting new connection @('127.0.0.1', 56132)
+log [18] >> [ CONNECTION - SUCCESS ] accepted new connection @('127.0.0.1', 56132): Alias - Mark
+log [19] >> [ STATUS ] clients connected: 3
+log [20] >> [ ALERT ] client Jill is disconnecting.
+log [21] >> [ STATUS ] clients connected: 2
+log [22] >> [ CONNECTION - ATTEMPT ] accepting new connection @('127.0.0.1', 57166)
+log [23] >> [ CONNECTION - SUCCESS ] accepted new connection @('127.0.0.1', 57166): Alias - Jill
+log [24] >> [ STATUS ] clients connected: 3
+log [25] >> [ ALERT ] client Jill is disconnecting.
+log [26] >> [ STATUS ] clients connected: 2
+log [27] >> [ CONNECTION - ATTEMPT ] accepting new connection @('127.0.0.1', 49080)
+log [28] >> [ ERROR ] failure in user authentication.
+
+Failure in srv_connect_client.
+[ err DETAIL ] <- 
+Failure in srv_user_authenticate.
+[ err DETAIL ] <- Failed user authentication : potential (time expired)...
+
+
+log [29] >> [ CONNECTION - ATTEMPT ] accepting new connection @('127.0.0.1', 57638)
+log [30] >> [ CONNECTION - SUCCESS ] accepted new connection @('127.0.0.1', 57638): Alias - Jo
+log [31] >> [ STATUS ] clients connected: 3
+log [32] >> [ ALERT ] client Jo is disconnecting.
+log [33] >> [ STATUS ] clients connected: 2
+log [34] >> [ CONNECTION - ATTEMPT ] accepting new connection @('127.0.0.1', 41912)
+log [35] >> [ ERROR ] failure in user authentication.
+
+Failure in srv_connect_client.
+[ err DETAIL ] <- 
+Failure in srv_user_authenticate.
+[ err DETAIL ] <- [ - ERROR ] Failed user authentication (max attempts)
+
+
+log [36] >> [ CONNECTION - ATTEMPT ] accepting new connection @('127.0.0.1', 40486)
+log [37] >> [ CONNECTION - SUCCESS ] accepted new connection @('127.0.0.1', 40486): Alias - Jo
+log [38] >> [ STATUS ] clients connected: 3
+log [39] >> [ COMMAND ] shutdown command executed... terminating server session.
+log [40] >> EXIT
+ID : 12345 NAME : Jane Doe
+log [0] >> [ NOTIFICATION ] using default port:8080
+log [1] >> ~~[ (0) BOOT ] Server running... address:127.0.1.1.
+log [2] >> [ (1) SOCKET - ATTEMPT ] socket().
+log [3] >> [ (1) SOCKET - SUCCESS ]...  success.
+log [4] >> [ (2) BIND - ATTEMPT ] bind().
+log [5] >> [ (2) BIND - SUCCESS ]... success.
+log [6] >> [ (3) LISTEN - ATTEMPT ] listen().
+log [7] >> [ (3) LISTEN - SUCCESS ]... success.
+log [8] >> ~~[ (4) LOAD ] server creating data handlers...
+log [9] >> ~~[ (4) LOAD ] server successfully created data handlers...
+log [10] >> ~~[ (5) INIT ] server in operation...
+log [11] >> [ COMMAND ] shutdown command executed... terminating server session.
+log [12] >> EXIT
+ID : 12345 NAME : Jane Doe
+log [0] >> [ NOTIFICATION ] using default port:8080
+log [1] >> ~~[ (0) BOOT ] Server running... address:127.0.1.1.
+log [2] >> [ (1) SOCKET - ATTEMPT ] socket().
+log [3] >> [ (1) SOCKET - SUCCESS ]...  success.
+log [4] >> [ (2) BIND - ATTEMPT ] bind().
+log [5] >> [ (2) BIND - SUCCESS ]... success.
+log [6] >> [ (3) LISTEN - ATTEMPT ] listen().
+log [7] >> [ (3) LISTEN - SUCCESS ]... success.
+log [8] >> ~~[ (4) LOAD ] server creating data handlers...
+log [9] >> ~~[ (4) LOAD ] server successfully created data handlers...
+log [10] >> ~~[ (5) INIT ] server in operation...
+log [11] >> [ CONNECTION - ATTEMPT ] accepting new connection @('127.0.0.1', 46704)
+log [12] >> [ CONNECTION - SUCCESS ] accepted new connection @('127.0.0.1', 46704): Alias - Jon
+log [13] >> [ STATUS ] clients connected: 1
+log [14] >> [ CONNECTION - ATTEMPT ] accepting new connection @('127.0.0.1', 44000)
+log [15] >> [ CONNECTION - SUCCESS ] accepted new connection @('127.0.0.1', 44000): Alias - Jill
+log [16] >> [ STATUS ] clients connected: 2
+log [17] >> [ CONNECTION - ATTEMPT ] accepting new connection @('127.0.0.1', 37064)
+log [18] >> [ CONNECTION - SUCCESS ] accepted new connection @('127.0.0.1', 37064): Alias - Poere
+log [19] >> [ STATUS ] clients connected: 3
+log [20] >> [ ALERT ] client Jon is disconnecting.
+log [21] >> [ STATUS ] clients connected: 2
+log [22] >> [ CONNECTION - ATTEMPT ] accepting new connection @('127.0.0.1', 44866)
+log [23] >> [ CONNECTION - SUCCESS ] accepted new connection @('127.0.0.1', 44866): Alias - Jon
+log [24] >> [ STATUS ] clients connected: 3
+log [25] >> [ ALERT ] client Jon is disconnecting.
+log [26] >> [ STATUS ] clients connected: 2
+log [27] >> [ CONNECTION - ATTEMPT ] accepting new connection @('127.0.0.1', 42788)
+log [28] >> [ ERROR ] failure in user authentication.
+
+Failure in srv_connect_client.
+[ err DETAIL ] <- 
+Failure in srv_user_authenticate.
+[ err DETAIL ] <- Failed user authentication : potential (time expired)...
+
+
+log [29] >> [ CONNECTION - ATTEMPT ] accepting new connection @('127.0.0.1', 55404)
+log [30] >> [ ERROR ] failure in user authentication.
+
+Failure in srv_connect_client.
+[ err DETAIL ] <- 
+Failure in srv_user_authenticate.
+[ err DETAIL ] <- Failed user authentication : potential (time expired)...
+
+
+log [31] >> [ ALERT ] client Poere is disconnecting.
+log [32] >> [ STATUS ] clients connected: 1
+log [33] >> [ COMMAND ] shutdown command executed... terminating server session.
+log [34] >> EXIT

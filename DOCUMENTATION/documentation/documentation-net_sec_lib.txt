@@ -1,0 +1,586 @@
+
+    Module <- NET_SEC_LIB
+
+    Author      : Jonathan Boyd
+    Context     : Network Programming : SECURE COMMUNICATION
+
+    Provides classes and functions to carry out secure network socket communication functionality.
+    Utilizes RSA asymmetric encryption and hashing.
+
+    Project Inception:   09/08/2024
+
+    Mentions    : Errors are accompanied by exceptions specifying the source trail if caught.
+
+    Classes     :
+        
+        Credentials
+        SecureKeyChain
+        KeyRing
+        Station
+
+    Functions   :
+
+        generate_passwd_hash( * , password : str )
+        keys( alias : str )
+        key_rsaToString( key : rsa.RSAPublicKey )
+        key_stringToRSA( key : str )
+        share_key( * , public_key : rsa.RSAPublicKey , outbound_socket : socket )
+        retrieve_key( inbound_socket : socket )
+        encrypt_rsa( * , message : str , pub_key : rsa.RSAPublicKey )
+        decrypt_rsa( * , message : bytes , priv_key : rsa.RSAPrivateKey )
+        secure_transmit( * , message : bytes, outbound_socket : socket)
+        secure_send( * , message : str , pub_key : rsa.RSAPublicKey , outbound_socket : socket)
+        secure_receive( * , inbound_socket : socket , priv_key : rsa.RSAPrivateKey )
+        secure_broadcast( * , message : str , sender : str , group : list[SecureKeyChain] )
+        hashed_passwd( inbound_socket : socket )        
+
+    Dependencies :
+
+        Custom modules ...
+            error_handle
+            net_comms_lib
+
+        Well-known modules ...
+            crpytography
+            dataclasses
+            hashlib
+            socket
+
+
+=============================
+
+=============================
+
+FUNCTION : generate_passwd_hash
+ 
+        Provides a sha256 hashed version of a given password.
+
+        This function is coupled with the hashlib module.
+
+            Parameters (KW_ONLY) :
+    
+                password : str  <- the password string to be hashed.
+    
+            Returns     :
+                
+                str             <- the hashed password
+
+            Exceptions  :
+       
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+Help on class Credentials in module __main__:
+
+class Credentials(builtins.object)
+ |  Credentials(*, username: str, password: str = <factory>, ip_addr: str) -> None
+ |
+ |  Represents an entity via username , password , and ip address.
+ |  This function dynamically generates a hashed version of the provided
+ |  password.
+ |
+ |  This class is coupled with the dataclass module.
+ |  This class is coupled with the generate_passwd_hash function ( **local function** )
+ |
+ |      Constructors    :
+ |
+ |          ( ** KW_ONLY )
+ |          Credentials( username : str , password : str , ip_addr : str )
+ |              ** Password is not displayed in print.
+ |
+ |      Fields          :
+ |
+ |          username : str  <- the associated user alias
+ |          password : str  <- the user's password
+ |          ip_addr  : str  <- the user's ip address
+ |
+ |      Exceptions      :
+ |
+ |          Raises an exception upon miscellaneous error with corresponding trail.
+ |
+ |  Methods defined here:
+ |
+ |  __eq__(self, other)
+ |      Return self==value.
+ |
+ |  __init__(self, *, username: str, password: str = <factory>, ip_addr: str) -> None
+ |      Initialize self.  See help(type(self)) for accurate signature.
+ |
+ |  __repr__(self)
+ |      Return repr(self).
+ |
+ |  ----------------------------------------------------------------------
+ |  Data descriptors defined here:
+ |
+ |  __dict__
+ |      dictionary for instance variables
+ |
+ |  __weakref__
+ |      list of weak references to the object
+ |
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes defined here:
+ |
+ |  __annotations__ = {'ip_addr': <class 'str'>, 'password': <class 'str'>...
+ |
+ |  __dataclass_fields__ = {'ip_addr': Field(name='ip_addr',type=<class 's...
+ |
+ |  __dataclass_params__ = _DataclassParams(init=True,repr=True,eq=True,or...
+ |
+ |  __hash__ = None
+ |
+ |  __match_args__ = ()
+
+None
+=============================
+
+=============================
+
+Help on class SecureKeyChain in module __main__:
+
+class SecureKeyChain(builtins.object)
+ |  SecureKeyChain(*, alias: str, public_key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPublicKey, address: <module 'socket' from '/usr/lib/python3.12/socket.py'>) -> None
+ |
+ |  Stores the public key and network socket associated with a user ( alias ).
+ |
+ |  This class is coupled with the dataclass module.
+ |  This class is coupled with the cryptography module.
+ |
+ |      Constructors    :
+ |          ( ** KW_ONLY ) ( ** FINAL - OBJECT CANNOT BE MODIFIED AFTER INSTANTIATION )
+ |
+ |          SecureKeyChain( alias : str , public_key : RSAPublicKey , address : socket )
+ |
+ |      Fields          :
+ |
+ |          alias           : str           <- name associated with the key chain
+ |          public_key      : RSAPublicKey  <- public key associated with the alias
+ |          address         : socket        <- the network socket associated with the alias
+ |
+ |      Exceptions      :
+ |
+ |          Raises an exception upon miscellaneous error with corresponding trail.
+ |
+ |  Methods defined here:
+ |
+ |  __delattr__(self, name)
+ |      Implement delattr(self, name).
+ |
+ |  __eq__(self, other)
+ |      Return self==value.
+ |
+ |  __hash__(self)
+ |      Return hash(self).
+ |
+ |  __init__(self, *, alias: str, public_key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPublicKey, address: <module 'socket' from '/usr/lib/python3.12/socket.py'>) -> None
+ |      Initialize self.  See help(type(self)) for accurate signature.
+ |
+ |  __repr__(self)
+ |      Return repr(self).
+ |
+ |  __setattr__(self, name, value)
+ |      Implement setattr(self, name, value).
+ |
+ |  ----------------------------------------------------------------------
+ |  Data descriptors defined here:
+ |
+ |  __dict__
+ |      dictionary for instance variables
+ |
+ |  __weakref__
+ |      list of weak references to the object
+ |
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes defined here:
+ |
+ |  __annotations__ = {'address': <module 'socket' from '/usr/lib/python3....
+ |
+ |  __dataclass_fields__ = {'address': Field(name='address',type=<module '...
+ |
+ |  __dataclass_params__ = _DataclassParams(init=True,repr=True,eq=True,or...
+ |
+ |  __match_args__ = ()
+
+None
+=============================
+
+=============================
+
+FUNCTION : KeyRing
+ 
+            Stores a private key and public key tied to a specified alias.
+            This class has no printed representation.
+
+            This class is coupled with the cryptography module.
+
+                Constructors    :
+                    ( ** KW_ONLY ) ( ** FINAL - OBJECT CANNOT BE MODIFIED AFTER INSTANTIATION )
+                    
+                    KeyRing( alias : str , private_key : RSAPrivateKey , public_key : RSAPublicKey )
+
+                Fields          :
+
+                    alias       : str               <- name associated with the key ring
+                    private_key : RSAPrivateKey     <- private key associated with the alias
+                    public_key  : RSAPublicKey      <- public key associated with the alias
+
+
+                Exceptions :
+       
+                    Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : keys
+
+        Generates a public and private key pair.
+        
+        This function is coupled with the cryptography module.
+        This function is coupled with the KeyRing class ( **local class ** )
+
+            Parameters :
+
+                alias : str     <- name to be associated with the key pair
+
+            Returns     :
+
+                KeyRing         <- ( See KeyRing documentation in this module. )
+
+            Exceptions :
+       
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+Help on class Station in module __main__:
+
+class Station(builtins.object)
+ |  Station(*, alias: str, ip_addr: str) -> None
+ |
+ |  Represents a host system which posesses an alias , ip address and public / private
+ |  key pair.
+ |  Represents a member of a public - private key pair network.
+ |
+ |  This class is coupled with the KeyRing class ( ** local class ** ).
+ |  This class is coupled with the keys function ( ** local function ** ).
+ |  This class is coupled with the error_handle module ( exception_generator )
+ |
+ |      Constructors :
+ |          (KW_ONLY)
+ |          Station( alias : str, ip_addr : str )
+ |              <- Dynamically generates public - private pair with keys function.
+ |
+ |      Fields      :
+ |          keys    : KeyRing       <- ( See KeyRing documentation in this module )
+ |          alias   : str           <- name prescribed to the station
+ |          ip_addr : str           <- ip address associated with station
+ |
+ |
+ |      Exceptions :
+ |
+ |          Raises an exception upon miscellaneous error with corresponding trail.
+ |
+ |  Methods defined here:
+ |
+ |  __init__(self, *, alias: str, ip_addr: str) -> None
+ |      Initialize self.  See help(type(self)) for accurate signature.
+ |
+ |  ----------------------------------------------------------------------
+ |  Data descriptors defined here:
+ |
+ |  __dict__
+ |      dictionary for instance variables
+ |
+ |  __weakref__
+ |      list of weak references to the object
+ |
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes defined here:
+ |
+ |  __annotations__ = {'keys': <class '__main__.KeyRing'>}
+
+None
+=============================
+
+=============================
+
+FUNCTION : key_rsaToString
+ 
+        Converts an RSAPublicKey to a serialized string.
+
+        This function is coupled with the cryptography module.
+        This function is coupled with the error_handle module ( exception_generator )
+
+            Paramters   :
+                
+                key : RSAPublicKey  <- the key to convert
+
+            Returns     :
+
+                str                 <- the result of conversion
+
+            Exceptions :
+       
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : key_stringToRSA
+ 
+        Converts a string representation of an RSAPublicKey into the RSAPublicKey object.
+
+        This function is coupled with the cryptography module.
+        This function is coupled with the error_handle module ( exception_generator ).
+
+            Parameters  : 
+
+                key   : str <- key to convert
+
+            
+            Returns     :
+
+                RSAPublicKey    <- result of conversion
+
+            Exceptions  :
+       
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : share_key
+ 
+        Sends a public key to through a provided network socket.
+        Shares a public key with a specified recipient.
+
+        This function is coupled with the cryptography module.
+        This function is coupled with the socket module.
+        This function is coupled wih the net_comms_lib module ( transmit ).
+        This function is coupled with the key_rsaToString function ( ** local function ** )
+        This funciton is coupled with the error_handle module
+
+            Parameters (KW_ONLY)    :
+                
+                public_key      : RSAPublicKey  <- the public key to send
+                outbound_socket : socket        <- the network socket through which to send
+                                                    the public key
+            Returns     :
+                None
+
+            Exceptions  :
+       
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : retrieve_key
+ 
+        Receives a shared public key from a specified network socket.
+
+        This function is coupled with the cryptography module.
+        This function is coupled with the socket module.
+        This function is coupled with the net_comms_lib module ( receive , utf8decoder).
+        
+        ** BLOCKING FUNCTION IS DEPENDENT ON AN EXTERNAL FACTOR ( receive ) 
+
+            Parameters  :
+
+                inbound_socket  : socket    <- where key shall be received
+
+            Exceptions  :
+       
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : encrypt_rsa
+ 
+        Encrypts data , or a message , via an rsa public key.
+
+        This function is coupled with the cryptography module.
+        This function is coupled with the error_handle module.
+
+            Parameters (KW_ONLY)    :
+                
+                message : str           <- the data to be encrypted
+                pub_key : RSAPublicKey  <- the public key used for encryption
+
+            Returns     :
+                
+                bytes   <- result of encryption
+
+            Exceptions :
+       
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : decrypt_rsa
+
+        Decrypts bytes via an rsa private key.
+
+        This function is coupled with the cryptography module.
+        This function is coupled with the error_handle module ( exception_generator )
+
+
+            Parameters (KW_ONLY)    :
+
+                message     : bytes         <- data to be decrypted
+                priv_key    : RSAPrivateKey <- private key to be used for decryption
+
+            Returns     :
+                
+                bytes               <- result of decryption
+
+            Exceptions :
+       
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : secure_transmit
+
+        Sends data , or a message , through a specified network socket.
+        Sends data encoded in base64.
+
+        This function is coupled with the socket module.
+        This function is coupled with the net_comms_lib module ( message_encode , base64encoder , send )
+        This function is coupled with the error_handle module ( exception_generator ).
+
+            Parameters (KW_ONLY)    :
+                
+                message         : bytes     <- the data to be transmitted (encrypted data)
+                outbound_socket : socket    <- the network socket through which data should be transmitted
+
+            Returns     :
+                None
+
+            Exceptions  :
+       
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : secure_send
+ 
+        Transmits data , or a message , encrypted with a provided public key. 
+
+        This function is coupled with the socket module.
+        This function is coupled with the encrypt_rsa function ( ** local function ** ).
+        This function is coupled with the secure_transmit function ( ** local function ** ).
+        This message is coupled with the cryptography module.
+        This function is coupled with the error_handle module ( exception_generator ).
+
+            Parameters (KW_ONLY) :
+
+                message         : str           <- the data to be transmitted
+                pub_key         : RSAPublicKey  <- the public key to be used for encryption
+                outbound_socket : socket        <- the network socket through which the data is
+                                                    transmitted
+
+            Returns     :
+                None
+
+            Exceptions  :
+       
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+
+        Receives data from a specified network socket and decrypts using provided private key.
+
+        This function is coupled with the socket module.
+        This function is coupled with the net_comms_lib module ( receive , base64decoder ).
+        This function is coupled with the decrypt_rsa function ( ** local function ** ).
+        This function is coupled with the error_handle module ( exception_generator ).
+
+        ** BLOCKING FUNCTION IS DEPENDENT ON AN EXTERNAL FACTOR ( receive ) 
+
+            Parameters (KW_ONLY)    :
+                
+                inbound_socket  : socket        <- the network socket where data is to be recieved
+                priv_key        : RSAPrivateKey <- the private key to be used in data decryption
+
+            Returns         :
+                
+                str | None          <- data received if available
+
+            Exceptions      :
+       
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : secure_broadcast
+ 
+        Sends data , or a message , to a specified group of recipients.
+        Utilizes public key cryptography to securely transmit data over
+        network sockets.
+
+        This function is coupled with the socket module.
+        This function is coupled with the secure_send function ( ** local_function ** ).
+        This function is coupled with the SecureKeyChain class ( ** local class ** ).
+        This function is coupled with the error_handle module ( exception_generator ).
+
+            Parameters (KW_ONLY) :
+                
+                message : str                   <- data to be broadcasted
+                sender  : str                   <- source of data to be broadcasted
+                group   : list[SecureKeyChain]  <- list of recipients with required data
+                                                    ( See SecureKeyChain documentation in
+                                                        this module. )
+            
+            Returns             :
+                None
+
+            Exceptions :
+       
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : hashed_passwd
+ 
+        Retrieves a password from a network socket and returns its hash (sha256).
+
+        This function is coupled with th socket module.
+        This function is coupled with the net_comms_lib module ( receive , utf8decoder ).
+        This function is coupled with the hashlib module ( sha256 ).
+
+        ** BLOCKING FUNCTION IS DEPENDENT ON AN EXTERNAL FACTOR ( receive ) 
+
+            Parameters  :
+            
+                inbound_socket  : socket    <- the socket expected to provide the password
+    
+            Returns     :
+                
+                str | None                  <- the password hashed or nothing if no reception
+
+            Exceptions :
+       
+                Raises an exception upon miscellaneous error with corresponding trail.
+    

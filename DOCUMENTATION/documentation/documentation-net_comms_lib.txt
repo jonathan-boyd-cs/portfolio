@@ -1,0 +1,320 @@
+
+    Module <- NET_COMMS_LIB
+
+    Author: Jonathan Boyd
+    Context: Network Programming : Communications
+
+    Provides network socket transmission and reception functionality.
+
+    Project Inception: 09/08/2024
+
+    Mentions: Errors are accompanied by exceptions specifying the source trail if caught.
+
+    Classes         :   
+                        Message
+
+    Functions       :
+                        
+                        utf8decoder( data : bytes )
+                        base64decoder( data : bytes )
+                        utf8encoder( data : str )
+                        base64encoder( data : bytes | str )
+                        message_encode( msg : str , encoder : Callable[ [str | bytes] , bytes ])
+                        send(data : Message , outbound_socket : socket )
+                        transmit( * , msg : str, outbound_socket : socket)
+                        receive( * , inbound_socket : socket , decode_proc : Callable[ [bytes], str | bytes ])
+                        broadcast( * , msg : str, sender : str, group : list[socket])
+
+
+    CONSTANTS       :
+                        C_FORMAT        = 'utf-8'   <- encoding format for transmission and reception
+                        HEADER_SIZE     = 64        <- size of header messages sent to detail incoming transmission sizes
+
+
+    Dependencies    :
+
+        Custom modules ...
+            error_handle
+
+        Well-known modules ...
+            base64
+            dataclasses
+            socket
+
+=============================
+
+=============================
+
+Help on class Message in module __main__:
+
+class Message(builtins.object)
+ |  Message(*, content: bytes, size: bytes) -> None
+ |
+ |  Represents content to be transmitted over a connection socket and that content's size ( in bytes )
+ |
+ |      Constructor ( KW_ONLY ) ( FINAL - OBJECT CANNOT BE MODIFIED AFTER INSTANTIATION ):
+ |
+ |          Message( content : bytes , size : bytes )
+ |
+ |
+ |      Fields :
+ |
+ |          content     : bytes     <- encoded data to be transmitted
+ |          size        : bytes     <- encoded representation of size of content
+ |
+ |  Methods defined here:
+ |
+ |  __delattr__(self, name)
+ |      Implement delattr(self, name).
+ |
+ |  __eq__(self, other)
+ |      Return self==value.
+ |
+ |  __hash__(self)
+ |      Return hash(self).
+ |
+ |  __init__(self, *, content: bytes, size: bytes) -> None
+ |      Initialize self.  See help(type(self)) for accurate signature.
+ |
+ |  __repr__(self)
+ |      Return repr(self).
+ |
+ |  __setattr__(self, name, value)
+ |      Implement setattr(self, name, value).
+ |
+ |  ----------------------------------------------------------------------
+ |  Data descriptors defined here:
+ |
+ |  __dict__
+ |      dictionary for instance variables
+ |
+ |  __weakref__
+ |      list of weak references to the object
+ |
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes defined here:
+ |
+ |  __annotations__ = {'content': <class 'bytes'>, 'size': <class 'bytes'>...
+ |
+ |  __dataclass_fields__ = {'content': Field(name='content',type=<class 'b...
+ |
+ |  __dataclass_params__ = _DataclassParams(init=True,repr=True,eq=True,or...
+ |
+ |  __match_args__ = ()
+
+None
+=============================
+
+=============================
+
+FUNCTION : utf8decoder
+ 
+        Converts (decoding) bytes via utf-8 format specifier.
+        This function is coupled with the error_handle module ( exception_generator )
+
+            Parameters  :
+
+                data : str  <- bytes to be converted
+
+            Returns     :
+
+                str         <- decoded data
+
+            Exception   :
+
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : base64decoder
+ 
+        Converts (decoding) bytes via base64 format specifer.
+
+        This function is coupled with the base64 module ( b64decode ).
+        This function is coupled with the error_handle module ( exception_generator )
+
+            Parameters  :
+                data : bytes    <- bytes to be converted
+
+            Returns     :
+                bytes           <- bytes post decode
+
+            Exceptions  :
+
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : utf8encoder
+ 
+        Converts (encoding) a string to bytes via utf-8 format specifier.
+
+        This function is coupled with the error_handle module ( exception_generator )
+
+            Parameters  :
+                
+                data : str  <- string to be converted
+
+            Returns     :
+                
+                bytes       <- result of encoding
+
+            Exceptions  :
+
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : base64encoder
+ 
+        Converts (encoding) a string or bytes via base64 format specifier.
+
+        This function is coupled with the error_handle module ( exception_generator )
+
+            Parameters  : 
+                
+                data : bytes | str  <- data to be converted
+
+            Returns     :
+
+                bytes               <- result of encoding
+            
+            Exceptions  :
+
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : message_encode
+ 
+        Converts a string of data , or message , via a desired encoding format , into bytes
+
+        This function is coupled with the collections.abc module ( Callable ).
+        This function is coupled with the local encoder functions ( utf8encoder , b64encoder ).
+        This function is coupled with the error_handle module ( exception_generator )
+
+
+            Parameters (KW_ONLY) :
+
+                msg     : str                           <- the data to be encoded
+                encoder : Callable[[str|bytes],bytes]   <- encoding function characterized by
+                                                        str or bytes parameter , returns bytes
+            Returns :
+                
+                Message     <- ( See Message documentation in this module. )
+
+            Exceptions  :
+
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : send
+ 
+        Sends data through a socket.
+
+        This function is coupled with the socket module.
+        This function is coupled with the Message class ( **local class** )
+        This function is coupled with the error_handle module ( exception_generator )
+
+            Parameters (KW_ONLY) :
+                
+                data            : Message   <- ( See Message documentation in this module. )
+                outbound_socket : socket    <- the socket through which information is sent
+
+            Returns     :
+                None
+
+            Exceptions  :
+
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : transmit
+
+        Encodes message data represented as a string and sends it out a network socket.
+
+        This function is coupled with message_encode ( **local function** )
+        This function is coupled with send ( **local function )
+        This function is coupled with the error_handle module ( exception_generator )
+            
+            Parameters (KW_ONLY) :
+                
+                msg             : str       <- data to be encoded and sent
+                outbound_socket : socket    <- socket out of which data is sent
+
+            Exceptions  :
+
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : receive
+ 
+        Retrieves an inbound message from a network socket.
+
+        
+        ** BLOCKING FUNCTION DEPENDING ON AN EXTERNAL FACTOR (receive) **
+        
+        This function is coupled with the socket module.
+        This function is coupled with the local decoder functions ( utf8decoder , base64decoder )
+        This function is coupled with the error_handle module ( exception_generator )
+
+            Parameters (KW_ONLY):
+
+                inbound_socket      : socket                        <- the socket from which a message 
+                                                                        is to be received
+                
+                decode_proc         : Callable[[bytes],str|bytes]   <- the decoder corresponding to anticipated
+                                                                        data encoding format
+
+            Returns     :
+                str | byte | None   <- data retreived if retreived
+            
+            Exceptions  :
+
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : broadcast
+ 
+        Sends provided message to a group of recipients.
+        Transmits data out of multiple sockets.
+        Prepends data with sender's name.
+
+        This function is coupled with the socket module.
+        This function is coupled with the message_encode function ( **local function** )
+        This function is coupled with the send function ( **local function** )
+        This function is coupled with the error_handle module ( exception_generator )
+        
+            Parameters (KW_ONLY) :
+                
+                msg         : str           <- message to be broadcasted
+                sender      : str           <- source of the message to be broadcasted
+                group       : list[socket]  <- list of sockets to transmit message out of
+
+            Returns     :
+                None
+
+            Exceptions  :
+
+                Raises an exception upon miscellaneous error with corresponding trail.
+    

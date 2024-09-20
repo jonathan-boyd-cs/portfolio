@@ -1,0 +1,644 @@
+
+    Module <- SERVER_LIB
+
+    Author: Jonathan Boyd
+    Context: Network Programming : Client Server ( Server - Side )
+
+    Provides server management and authentication functionality for
+    client server model.
+
+    Project Inception: 09/08/2024
+
+    Mentions: Errors are accompanied by exceptions specifying the source trail if caught.
+
+    Classes         :
+        
+        Log                     
+        Client
+        Connection
+        ConnectionMultiplexor
+        UserIndex
+        ActiveConnectionLedger
+
+    Functions       :
+
+        srv_welcome_client( * , client : Connection )
+        srv_get_credentials( * , client : Connection )
+        srv_user_authenticate( * , client : Connection, database : Database ) -> str:
+        srv_connect_client( * , client : Connection , connection_ledger : ActiveConnectionLedger,  database : Database)
+        srv_accept_client( * , connection_socket : socket ) -> Connection :
+
+    Constants       :
+
+        SERVER          <- server-admin specified ip address of server
+        PORT = 8080     <- server-admin specified service port of server
+        SERVER_SOCKET   <- server-admin specified ip address and port pairing
+        MAX_CLIENTS     <- server-admin specified maximum connection queue size
+        DISCONNECT_MSG  <- server-admin specified client disconnect keyword
+        SERVER_GREETING <- server-admin specified welcome message for connecting clients
+
+    Dependencies    :
+
+        Custom modules ...
+            database_lib
+            error_handle
+            net_comms_lib
+            net_sec_lib
+
+        Well-known modules ...
+            collections.abc
+            cryptography
+            dataclasses
+            socket
+            sys
+
+=============================
+
+=============================
+
+Help on class Log in module __main__:
+
+class Log(builtins.object)
+ |  Log(userid: str = 'N/A', username: str = 'N/A', log_file: str = 'output.txt') -> None
+ |
+ |  Logs server activity to a log file in a configured format.
+ |
+ |  This class is coupled with the error_handle module ( exception_generator ).
+ |
+ |      Fields  :
+ |
+ |          __log_file      <-  location of log output
+ |          __userid        <-  numerical alias of active server admin
+ |          __username      <-  common name alias of active server admin
+ |          __log_index     <-  indexor of active log session
+ |
+ |      Constructors    :
+ |          Log( userid : str , username : str , log_file ) <- [ all parameters optional ]
+ |              <- Opens log file and appends identification upon instantiation.
+ |
+ |      Methods         :
+ |
+ |          logging
+ |
+ |  Methods defined here:
+ |
+ |  __init__(self, userid: str = 'N/A', username: str = 'N/A', log_file: str = 'output.txt') -> None
+ |      Constructor <- ( See class Log overview documentation in this module. )
+ |
+ |      This function is coupled with the error_hanle module ( exception_genertor )
+ |
+ |      Exceptions :
+ |
+ |              Raises an exception upon miscellaneous error with corresponding trail.
+ |
+ |  logging(self, message: str) -> None
+ |      Writes a provided message to the __log_file file.
+ |
+ |      This function is coupled with the error_handle module ( exception_generator )
+ |
+ |          Parameters  :
+ |
+ |              message : str   <- the message to be logged
+ |
+ |          Returns :
+ |              None
+ |
+ |          Exceptions :
+ |
+ |              Raises an exception upon miscellaneous error with corresponding trail.
+ |
+ |  ----------------------------------------------------------------------
+ |  Data descriptors defined here:
+ |
+ |  __dict__
+ |      dictionary for instance variables
+ |
+ |  __weakref__
+ |      list of weak references to the object
+
+None
+=============================
+
+=============================
+
+Help on class Client in module __main__:
+
+class Client(builtins.object)
+ |  Client(*, alias: str, ip_addr: str) -> None
+ |
+ |  Stores client metadata  required for communication.
+ |
+ |  This class is coupled with the cryptography module.
+ |
+ |  Constructors    :
+ |      (KW_ONLY)
+ |      Client( alias : str . ip_addr : str , public_key : RSAPublicKey )
+ |
+ |  Methods defined here:
+ |
+ |  __eq__(self, other)
+ |      Return self==value.
+ |
+ |  __init__(self, *, alias: str, ip_addr: str) -> None
+ |      Initialize self.  See help(type(self)) for accurate signature.
+ |
+ |  __repr__(self)
+ |      Return repr(self).
+ |
+ |  ----------------------------------------------------------------------
+ |  Data descriptors defined here:
+ |
+ |  __dict__
+ |      dictionary for instance variables
+ |
+ |  __weakref__
+ |      list of weak references to the object
+ |
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes defined here:
+ |
+ |  __annotations__ = {'alias': <class 'str'>, 'ip_addr': <class 'str'>, '...
+ |
+ |  __dataclass_fields__ = {'alias': Field(name='alias',type=<class 'str'>...
+ |
+ |  __dataclass_params__ = _DataclassParams(init=True,repr=True,eq=True,or...
+ |
+ |  __hash__ = None
+ |
+ |  __match_args__ = ()
+ |
+ |  public_key = None
+
+None
+=============================
+
+=============================
+
+Help on class Connection in module __main__:
+
+class Connection(builtins.object)
+ |  Connection(*, csocket: <module 'socket' from '/usr/lib/python3.12/socket.py'>, ip_addr: str) -> None
+ |
+ |  Maintains information corresponding to a client connection and client metadata.
+ |
+ |  This class is coupled with the Client class ( ** local class ** )
+ |  This class is coupled with the socket module.
+ |  This class is coupled with the error_handle module ( exception_generator )
+ |
+ |  Constructors    :
+ |      (KW_ONLY)
+ |      Connection( csocket : socket , ip_addr : str)
+ |
+ |  Fields          :
+ |
+ |      csocket : socket    <- network socket associated with a connection
+ |      client  : Client    <- ( See Client class overview documentation in this module. )
+ |
+ |  Methods defined here:
+ |
+ |  __init__(self, *, csocket: <module 'socket' from '/usr/lib/python3.12/socket.py'>, ip_addr: str) -> None
+ |      Constructor <- ( See Connection class overiew in this module. )
+ |
+ |      This function is coupled with the socket module.
+ |      This function is coupled with the Client class ( ** local class ** ).
+ |      This function is coupled with the error_handle module ( exception_generator )
+ |
+ |      Exceptions :
+ |
+ |          Raises an exception upon miscellaneous error with corresponding trail.
+ |
+ |  update_alias(self, *, name: str) -> None
+ |      Updates the alias tied to a given connection instance.
+ |
+ |      This function is coupled with the error_handle module ( exception_generator )
+ |
+ |              Parameters (KW_ONLY) :
+ |
+ |                  name : str  <- prescribed alias
+ |
+ |              Returns :
+ |                  None
+ |
+ |              Exceptions :
+ |
+ |                  Raises an exception upon miscellaneous error with corresponding trail.
+ |
+ |  ----------------------------------------------------------------------
+ |  Data descriptors defined here:
+ |
+ |  __dict__
+ |      dictionary for instance variables
+ |
+ |  __weakref__
+ |      list of weak references to the object
+ |
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes defined here:
+ |
+ |  __annotations__ = {'client': <class '__main__.Client'>, 'csocket': <mo...
+
+None
+=============================
+
+=============================
+
+Help on class ConnectionMultiplexor in module __main__:
+
+class ConnectionMultiplexor(builtins.object)
+ |  ConnectionMultiplexor(listen_socket: <module 'socket' from '/usr/lib/python3.12/socket.py'>, fd_set: list[<module 'socket' from '/usr/lib/python3.12/socket.py'>] = <factory>) -> None
+ |
+ |  Facilitates socket multiplexing. Maintains a dynamic file descriptor set for socket
+ |  select functionality.
+ |
+ |  This class is coupled with the dataclasses module.
+ |  This class is coupled with the socket module.
+ |  This class is coupled with the error_handle module ( exception_generator ).
+ |
+ |      Constructors :
+ |          ConnectionMultiplexor(listen_socket : socket)     <- Requires the socket designated for
+ |                                                              receiving new client connections.
+ |      Fields :
+ |
+ |          listen_socket   : socket        <- socket designated for detecting new client connections
+ |          fd_set          : list[socket]  <- list of currently maintained connection sockets
+ |
+ |          ** __post_init__() defined  <- adds stdin and listen socket to the file descriptor set
+ |
+ |  Methods defined here:
+ |
+ |  __eq__(self, other)
+ |      Return self==value.
+ |
+ |  __init__(self, listen_socket: <module 'socket' from '/usr/lib/python3.12/socket.py'>, fd_set: list[<module 'socket' from '/usr/lib/python3.12/socket.py'>] = <factory>) -> None
+ |      Initialize self.  See help(type(self)) for accurate signature.
+ |
+ |  __post_init__(self)
+ |      ( See ConnectionMultiplexor class overview documentation in this module. )
+ |
+ |      Exceptions :
+ |
+ |          Raises an exception upon miscellaneous error with corresponding trail.
+ |
+ |  __repr__(self)
+ |      Return repr(self).
+ |
+ |  ----------------------------------------------------------------------
+ |  Data descriptors defined here:
+ |
+ |  __dict__
+ |      dictionary for instance variables
+ |
+ |  __weakref__
+ |      list of weak references to the object
+ |
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes defined here:
+ |
+ |  __annotations__ = {'fd_set': list[<module 'socket' from '/usr/lib/pyth...
+ |
+ |  __dataclass_fields__ = {'fd_set': Field(name='fd_set',type=list[<modul...
+ |
+ |  __dataclass_params__ = _DataclassParams(init=True,repr=True,eq=True,or...
+ |
+ |  __hash__ = None
+ |
+ |  __match_args__ = ('listen_socket', 'fd_set')
+
+None
+=============================
+
+=============================
+
+Help on class UserIndex in module __main__:
+
+class UserIndex(builtins.object)
+ |  UserIndex() -> None
+ |
+ |  Maintains a neutrally defined user dictionary with an accompanying user count variable.
+ |
+ |  This class is coupled with the dataclasses module.
+ |
+ |      Constructors :
+ |
+ |          UserIndex()     <- Default
+ |
+ |      Fields      :
+ |
+ |          user_set    : dict      <- maintains a set of users and desired metadata
+ |          user_count  : int       <- denotes number of users in user_set
+ |
+ |  Methods defined here:
+ |
+ |  __eq__(self, other)
+ |      Return self==value.
+ |
+ |  __init__(self) -> None
+ |      Initialize self.  See help(type(self)) for accurate signature.
+ |
+ |  __repr__(self)
+ |      Return repr(self).
+ |
+ |  ----------------------------------------------------------------------
+ |  Data descriptors defined here:
+ |
+ |  __dict__
+ |      dictionary for instance variables
+ |
+ |  __weakref__
+ |      list of weak references to the object
+ |
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes defined here:
+ |
+ |  __annotations__ = {'user_count': <class 'int'>, 'user_set': <class 'di...
+ |
+ |  __dataclass_fields__ = {'user_count': Field(name='user_count',type=<cl...
+ |
+ |  __dataclass_params__ = _DataclassParams(init=True,repr=True,eq=True,or...
+ |
+ |  __hash__ = None
+ |
+ |  __match_args__ = ()
+ |
+ |  user_count = 0
+
+None
+=============================
+
+=============================
+
+CLASS : ActiveConnectionLedger
+Help on class ActiveConnectionLedger in module __main__:
+
+class ActiveConnectionLedger(builtins.object)
+ |  ActiveConnectionLedger(*, listener: <module 'socket' from '/usr/lib/python3.12/socket.py'>) -> None
+ |
+ |  Actively monitors and manages network socket connections.
+ |
+ |  This class is coupled with the socket module.
+ |  This class is coupled with the ConnectionMultiplexor class ( ** local class ** ).
+ |  This class is coupled with the UserIndex class ( ** local class ** ).
+ |  This class is coupled with the error_handle module ( excepton_generator ).
+ |
+ |      Constructors    :
+ |          (KW_ONLY)
+ |          ActiveConnectionLedger( listener : socket ) <- used to produce a ConnectionMultiplexor
+ |
+ |      Fields          :
+ |
+ |          manager         : ConnectionMultiplexor     <- ( See ConnectionMultiplexor class documentation
+ |                                                      in this module. )
+ |          database        : UserIndex                 <- ( See UserIndex class documentation in this module. )
+ |
+ |  Methods defined here:
+ |
+ |  __init__(self, *, listener: <module 'socket' from '/usr/lib/python3.12/socket.py'>) -> None
+ |      Constructor
+ |      ( See ActiveConnectionLedger class overview documentation in this module. )
+ |
+ |      Exceptions :
+ |
+ |          Raises an exception upon miscellaneous error with corresponding trail.
+ |
+ |  add(self, *, connection: __main__.Connection) -> None
+ |      Adds a new connection to the manager dataset and database dataset.
+ |
+ |      This function is coupled with the socket module.
+ |      This function is coupled with the database_lib module.
+ |      This function is coupled with the error_handle module ( exception_generator ).
+ |
+ |              Parameters (KW_ONLY) :
+ |
+ |                  connection : Connection <- ( See the Connection class documentation in this module
+ |
+ |              Returns :
+ |                  None
+ |
+ |              Exceptions :
+ |
+ |                  Raises an exception upon miscellaneous error with corresponding trail.
+ |
+ |  purge(self) -> None
+ |      Removes all active connections from the object database.
+ |
+ |      This function is coupled with the error_handle module ( exception_generator ).
+ |
+ |              Parameters :
+ |                  None
+ |
+ |              Returns :
+ |                  None
+ |
+ |              Exceptions :
+ |
+ |                  Raises an exception upon miscellaneous error with corresponding trail.
+ |
+ |  remove(self, *, connection: <module 'socket' from '/usr/lib/python3.12/socket.py'>) -> None
+ |      Erases a connection from the manager dataset and database dataset.
+ |      (Not the primary server database)
+ |
+ |      This function is coupled with the error_handle module ( exception_generator ).
+ |
+ |              Parameters (KW_ONLY) :
+ |
+ |                  connection : socket <- the socket corresponding to the connection to erase
+ |
+ |              Returns :
+ |                  None
+ |
+ |              Exceptions :
+ |
+ |                  Raises an exception upon miscellaneous error with corresponding trail.
+ |
+ |  update_key(self, *, connection: <module 'socket' from '/usr/lib/python3.12/socket.py'>, key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPublicKey) -> None
+ |      Updates the public key tied to a particular connection in the object database.
+ |
+ |      This function is coupled with the cryptography module.
+ |      This function is coupled with the socket module.
+ |      This function is coupled with the error_handle module ( exception_generator ).
+ |
+ |              Parameters (KW_ONLY) :
+ |
+ |                  connection  : socket        <- the socket corresponding to the connection to update
+ |                  key         : RSAPublicKey  <- key to store at specified location
+ |
+ |              Returns :
+ |                  None
+ |
+ |              Exceptions :
+ |
+ |                  Raises an exception upon miscellaneous error with corresponding trail.
+ |
+ |  ----------------------------------------------------------------------
+ |  Data descriptors defined here:
+ |
+ |  __dict__
+ |      dictionary for instance variables
+ |
+ |  __weakref__
+ |      list of weak references to the object
+ |
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes defined here:
+ |
+ |  __annotations__ = {'database': <class '__main__.UserIndex'>, 'manager'...
+
+None
+METHOD : purge
+=============================
+
+=============================
+
+FUNCTION : srv_welcome_client
+ 
+        Provides newly connected clients with a server welcome message.
+
+        This function is coupled with the socket module.
+        This function is coupled with the net_comms_lib module ( transmit ).
+        This function is coupled with the error_handle module ( exception_generator ).
+                
+                Parameters (KW_ONLY) :
+                    
+                    client : Connection <- ( See Connection class documentation in this module. )
+
+                Returns :
+                    None
+
+                Exceptions :
+       
+                    Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : srv_get_credentials
+ 
+        Retreives credentials from client through a network socket connection.
+
+        ** BLOCKING FUNCTION DEPENDENT ON AN EXTERNAL FACTOR
+
+        This function is coupled with the Connection class ( ** local class ** ).
+        This function is coupled with the net_comms_lib module ( receive , utf8decoder ).
+        This function is coupled with the net_sec_lib module ( hashed_passwd , Credentials ).
+        This function is coupled with the error_handle module ( exception_generator ).
+                
+                Parameters (KW_ONLY) :
+                    
+                    client  <- Connection  <- contains information used to reach client
+
+                Returns :
+                    Credentials <- ( See Credentials class documentation in net_sec_lib module. )
+
+                Exceptions :
+       
+                    Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : srv_user_authenticate
+
+        Conducts the authentication process with the client.
+        Obtains client credentials and checks agaisnt a database.
+
+        This function is coupled with the socket module.
+        This function is coupled with the srv_get_credentials function ( ** local function ** ).
+        This function is coupled with the database_lib module ( hasUser , create_new_user , authenticate_user ).
+        This function is coupled with the Connection class ( ** local class ** ).
+        This function is coupled with the error_handle module ( exception_generator ).
+        
+                Paramaters  (KW_ONLY) :
+                    
+                    client      : Connection    ( See Connection class documentation is this module. )
+                    database    : Database      ( See Database class documetnation in database_lib. )
+            
+                Returns :
+                    
+                    str <- username of authenticated client
+
+                Exceptions :
+       
+                    Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : srv_connect_client
+ 
+        Processes a client connection with a server , given a database , authenticating the user and logging the
+        connection upon success.
+        
+        This function is coupled with the srv_user_authenticate function ( ** local function ** ).
+        This function is coupled with the database_lib module (log_connection ). 
+        This function is coupled with the ActiveConnectionLedger add function ( ** local class - local function ** ).
+        This function is coupled with the error_handle module ( exception_generator ).
+
+                Parameters (KW_ONLY)    :
+                    
+                    client              : Connection                <- ( See Connection documentation in this module. )
+                    connection_ledger   : ActiveConnectionLedger    <- ( See ActiveConnectionLedger documentation 
+                                                                     in this module.)
+                    database            : Database                  <- ( See Database documentation in database_lib module. )
+                
+                Returns :
+                    None
+
+                Exceptions :
+       
+                    Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : srv_accept_client
+ 
+        Accepts a network socket connection and creates a client object with the associated
+        metadata.
+
+        This function is coupled with the socket module.
+        This function is coupled with the Connection class ( ** local class ** ).
+        This function is coupled with the error_handle module ( exception_generator ).
+
+                Parameters (KW_ONLY) :
+
+                    connection_socket   : socket    <- the network socket where a connection is 
+                                                        to be established
+
+                Returns :
+
+                    Connection  <- metadata associated with accepted client
+                
+                Exceptions :
+       
+                    Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : generate_logger
+ 
+    
+
+        Given a logging function , returns a decorated server instance of the function.
+        Prints a log function message while simultaneously carrying out its default function.
+
+
+        This function is coupled with the error_handle module ( exception_generator ).
+
+                Parameters (KW_ONLY) :
+                    
+                    logger  : Log   <- the log function to be decorated
+
+                Returns :
+                    
+                    Callable[ [str] , None ] <- a log function
+                      
+                Exceptions :
+       
+                    Raises an exception upon miscellaneous error with corresponding trail.
+    

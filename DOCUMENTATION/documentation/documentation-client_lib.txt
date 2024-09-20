@@ -1,0 +1,143 @@
+
+    Module <- CLIENT_LIB
+
+    Author: Jonathan Boyd
+    Context: Network Programming : Client Server ( Client - Side )
+
+    Provides client authentication , server connection , and input functionality
+
+    Project Inception: 09/08/2024
+
+    Mentions: Errors are accompanied by exceptions specifying the source trail if caught.
+
+    Functions :
+
+            user_input( prompt : str , timeout : int )
+            get_credentials()
+            authenticate_user( credentials : Credentials , server_socket : socket )
+            login( SERVER : tuple[ ip_addr : str , port : int ] )
+
+    Dependencies :
+
+        Custom modules ...
+            error_handle
+            net_comms_lib
+            net_sec_lib
+
+        Well-known modules ...
+            select
+            socket
+            sys
+
+=============================
+
+=============================
+
+FUNCTION : user_input
+ 
+        Retrieves user input with the additional of a limited time window.
+        The function strips inputs of leading and trailing spaces.
+        The function is coupled with the select module ( enforcing time ).
+        This function is coupled with the sys module (reading input ).
+        This function is coupled with the error_handle module ( exception_generator )
+
+            Parameters (KW_ONLY) :
+            
+                prompt  : str       <- Displays a message conveying the context of the input.
+                timeout : int       <- Enforces a time limit on user responses.
+
+            Returns :
+                
+                str                 <- users response
+
+            Exceptions :
+                
+                Raises an exception upon time expired.
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : get_credentials
+ 
+        Retrieves the username and password of the user.
+       
+
+
+        This function is coupled with the net_sec_lib module ( see class:Credentials ).
+        This function is coupled with the user_input function ( **local fucntion** ).
+        This function is coupled with the error_handle module ( exception_generator )
+
+            Parameters :
+                None
+
+        Returns:
+            Credentials <- see net_sec_lib#Credentials
+
+        Exceptions :
+
+            Raises an exception upon failure to retrieve either username or password.
+            Raises an exception upon miscellaneou error with corresponding trail.
+    
+=============================
+
+=============================
+
+FUNCTION : authenticate_user
+ 
+        Validates user credentials with a server.
+        Sends credentials to a server and receives a response.
+
+        This function is coupled with the net_comms_lib ( function:transmit , function:receive )
+        This function is coupled with the error_handle module ( exception_generator )
+        
+        ** BLOCKING FUNCTION DEPENDING ON AN EXTERNAL FACTOR (receive) **
+
+            Parameters (KW_ONLY) :  
+
+                credentials     : Credentials   <- Contains the user's username and password.
+                server_socket   : socket        <- The network socket actively connected with a server.
+
+            Returns :
+            
+                bool                            <- Success or failure in authentication
+
+            Exceptions :
+       
+                Raises an exception upon miscellaneous error with corresponding trail.
+
+    
+=============================
+
+=============================
+
+FUNCTION : login
+ 
+        Attempts to establish a connection with a remote server.
+        Creates a socket connected to a server and authenticates user.
+
+        ** BLOCKING FUNCTION DEPENDING ON AN EXTERNAL FACTOR (receive) **
+        
+        This function is coupled with the socket module.
+        This functin is coupled with the net_comms_lib module ( function:receive ).
+        This function is coupled with the get_credentials function ( **local function** ).
+        This function is coupled with the authenticate_user function ( **local function** ).
+        This function is coupled with the error_handle module ( exception_generator )
+
+            Parameters (KW_ONLY) :
+            
+                SERVER          : tuple[str , int]      <-  tuple[ ip_addr , port ] <- used for socket creation
+                max_attempts    : int                   <-  Provides a bound for number
+                                                            of allowed incorrect passwords.
+
+            Returns :
+            
+                socket                                  <-  the established socket with a server
+
+            Exceptions :
+
+                Raises an exception and closes a potentially open socket upon unexpected error.  
+                Raises an exception upon miscellaneous error with corresponding trail.
+    
+    
