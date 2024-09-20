@@ -26,7 +26,7 @@
 
 This project repository consists of a specific instance of a non-specific assortment of modules. The context of the specific instance is a chat room, as assigned in a university networking course. The function of the chat room instance is associated with the two files ... <code>server.py</code> and <code>client.py</code>.
 
-To poperly test the specific instance...
+To properly test the specific instance...
 
 <ol>
     <li>Run the <code>server.py</code> file on an Ubuntu terminal. Enure that all files are in the originally cloned folder. The server.py file can be run at the command line as <code>python server.py</code> or <code>python server.py {service port}</code>. The latter version of command line argument will initiate the server instance on a user-defined ephemeral service port. Otherwise, the server utilizes port 8080. The server will output the ip address being utilized for client connections upon initiation. The location of a failure in server initialization will be readily outputed before program failure.</li>
