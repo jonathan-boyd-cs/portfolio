@@ -41,7 +41,7 @@ The server will output the process of client connections and disconnections and 
 The server will produce a file which stores user login credentials and a file which serves as a log of server errors and operation. The login functionality is at baseline insignificant, as it only prevents an existing user from loggining in without a previously learned password. Password complexity and new database entry restrictions will have to be implemented by the forker.
 <br><br>
 <sub>
-This project provides an open-source display of a <code>socket programming</code> server-client model. The language is <code>Python</code>. The format/style of coding reflects a developing sense of coding smells and best practices.
+This project provides an open-source display of a <code>socket programming</code> server-client model. The language is <code>Python</code>. The format/style of coding reflects a developing sense of coding best practices.
 
 The project consists of two network communications modules (<code>net_sec_lib</code> and <code>net_comms_lib</code>). These libraries depend heavily on the <code>socket</code> module. The <code>net_sec_lib</code> module utilizes the <code>cryptography</code> module to incorporate encryption into network socket communications.
 
