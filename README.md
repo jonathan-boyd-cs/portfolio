@@ -11,7 +11,6 @@
 ##### **Network+** (_DWZJP8N6G1EQQBCL_)
 ##### **Security+** (_RGP8QR5RHFV1QECH_)
 
-### THIS PROJECT REPOSITORY IS ACCOMPANIED WITH DOCUMENTATION.
 
 ### Known bugs
 - (10/31/2024) The documentation for the database needs to be updated after factoring out the use of dataclasses module
